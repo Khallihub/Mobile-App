@@ -12,6 +12,13 @@ export class postDto {
     @IsNotEmpty()
     author: string;
 
+    @IsString()
+    @IsNotEmpty()
+    authorName: string;
+
+    @IsString()
+    authorAvatar: string;
+
     @IsArray()
     @IsNotEmpty()
     categories: string[]

@@ -127,6 +127,9 @@ export class PostService {
       createdAt: Date.now(),
       categories: dto.categories,
       sourceURL: dto.sourceURL,
+      authorName: dto.authorName,
+      authorAvatar: dto.authorAvatar,
+      
     });
     const result = await post.save();
     return result;
