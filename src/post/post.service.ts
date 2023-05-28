@@ -12,20 +12,25 @@ export class PostService {
     throw new Error('Method not implemented.');
   }
 
-  async comment(data: { id: string; comment: string }) {
+  async comment(data: { id: string; userName: string; comment: string }) {
     const post = await this.post.findById(data.id);
     let temp = post.comments;
-    temp.push(data.comment);
+    temp.push([data.userName, data.comment]);
     const updatePost = await this.post.findByIdAndUpdate(
       { _id: data.id },
       { comments: temp },
       { new: true },
     );
     if (updatePost) {
-      return 'commented';
+      return updatePost;
     } else {
       return 'failed';
     }
+  }
+  async getComments(data: { id: string }) {
+    const feed = await this.post.findById(data.id);
+    const comments = feed.comments;
+    return comments;
   }
   async like_Unlike(data: { id: string; userName: string }) {
     const post = await this.post.findById(data.id);
@@ -53,7 +58,7 @@ export class PostService {
       { new: true },
     );
     if (updatedPost) {
-      return true;
+      return updatedPost;
     } else {
       return false;
     }
@@ -110,7 +115,7 @@ export class PostService {
       { new: true },
     );
     if (updatedPost) {
-      return true;
+      return updatedPost;
     } else {
       return false;
     }
@@ -129,7 +134,6 @@ export class PostService {
       sourceURL: dto.sourceURL,
       authorName: dto.authorName,
       authorAvatar: dto.authorAvatar,
-      
     });
     const result = await post.save();
     return result;

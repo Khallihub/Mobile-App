@@ -38,7 +38,8 @@ export class AuthService {
         );
       const tokens = await this.getTokens(user.email, user.role);
       await this.updateRtHash(user.id, tokens.refresh_token);
-      return [{ ...tokens, role: user.role }, user.role];
+      const toFront = { ...user, password: undefined, hash: undefined, hashedRt: undefined}
+      return { ...tokens, role: user.role , user: toFront};
     }
   }
 

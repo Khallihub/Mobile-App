@@ -27,12 +27,17 @@ export class PostController {
   }
 
   @Post('comment')
-  async comment(@Body() data: { id: string; comment: string }) {
+  async comment(@Body() data: { id: string; userName: string; comment: string }) {
     return this.postService.comment(data);
+  }
+  
+  @Post('getComments')
+  async getComment(@Body() data: { id: string}) {
+    return this.postService.getComments(data);
   }
 
   @Post('deletePost')
-  async rate(@Body() data: { id: string }) {
+  async deletePost(@Body() data: { id: string }) {
     return this.postService.deletePost(data);
   }
 
