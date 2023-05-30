@@ -15,6 +15,11 @@ export class PostController {
   async getFeed() {
     return this.postService.getFeed();
   }
+  
+  @Post('getSinglePost')
+  async getSinglePost(@Body() data: { id: string}) {
+    return this.postService.getSinglePost(data);
+  }
 
   @Post('like')
   async like_Unlike(@Body() data: { id: string; userName: string }) {
@@ -34,6 +39,14 @@ export class PostController {
   @Post('getComments')
   async getComment(@Body() data: { id: string}) {
     return this.postService.getComments(data);
+  }
+  @Post('getLikes')
+  async getLikes(@Body() data: { id: string}) {
+    return this.postService.getLikes(data);
+  }
+  @Post('getDisLikes')
+  async getDisLikes(@Body() data: { id: string}) {
+    return this.postService.getDislikes(data);
   }
 
   @Post('deletePost')

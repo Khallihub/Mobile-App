@@ -7,11 +7,15 @@ import { POST } from './post.model';
 @Injectable()
 export class PostService {
   constructor(@InjectModel('post') private post: Model<POST>) {}
-
+  
   rate() {
     throw new Error('Method not implemented.');
   }
-
+  
+  async getSinglePost(data: { id: string; }) {
+    const post = await this.post.findById(data.id)
+    return post
+  }
   async comment(data: { id: string; userName: string; comment: string }) {
     const post = await this.post.findById(data.id);
     let temp = post.comments;
@@ -31,6 +35,16 @@ export class PostService {
     const feed = await this.post.findById(data.id);
     const comments = feed.comments;
     return comments;
+  }
+  async getLikes(data: { id: string; }) {
+    const feed = await this.post.findById(data.id);
+    const likes = feed.likes
+    return likes
+  }
+  async getDislikes(data: { id: string; }) {
+    const feed = await this.post.findById(data.id);
+    const dislikes = feed.dislikes
+    return dislikes
   }
   async like_Unlike(data: { id: string; userName: string }) {
     const post = await this.post.findById(data.id);

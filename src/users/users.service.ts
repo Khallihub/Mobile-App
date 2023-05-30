@@ -14,8 +14,8 @@ export class UsersService {
   async addUser(dto: userDto) {
     const user = new this.user({
       Name: dto.Name,
-      email: dto.email,
-      userName: dto.userName,
+      email: dto.email.toLowerCase(),
+      userName: dto.userName.toLowerCase(),
       avatar: dto.avatar,
       bio: dto.bio,
       following: dto.following,
@@ -29,11 +29,11 @@ export class UsersService {
   }
 
   async findByUsername(info: { userName: string }): Promise<USER | undefined> {
-    return await this.user.findOne({ userName: info.userName });
+    return await this.user.findOne({ userName: info.userName.toLowerCase() });
   }
 
   async findByemail(info: { email: string }): Promise<USER | undefined> {
-    return await this.user.findOne({ email: info.email });
+    return await this.user.findOne({ email: info.email.toLowerCase() });
   }
 
   async updateProfile(dto: userDto) {
