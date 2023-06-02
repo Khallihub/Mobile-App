@@ -21,12 +21,18 @@ export class AuthService {
     const user = await this.usersService.addUser(dto);
     const tokens = await this.getTokens(user.email, user.role);
     await this.updateRtHash(user.id, tokens.refresh_token);
-    return { ...tokens, role: user.role };
+    const toFront = {
+      ...user,
+      password: undefined,
+      hash: undefined,
+      hashedRt: undefined,
+    };
+    return { ...tokens, role: user.role, user: toFront };
   }
 
   async loginUser(dto: loginDto): Promise<any> {
-    const query = { email: dto.email};
-    const user = await this.usersService.findByemail(query); 
+    const query = { email: dto.email };
+    const user = await this.usersService.findByemail(query);
     if (!user) {
       throw new HttpException('User not found!', HttpStatus.FORBIDDEN);
     } else {
@@ -38,20 +44,22 @@ export class AuthService {
         );
       const tokens = await this.getTokens(user.email, user.role);
       await this.updateRtHash(user.id, tokens.refresh_token);
-      const toFront = { ...user, password: undefined, hash: undefined, hashedRt: undefined}
-      return { ...tokens, role: user.role , user: toFront};
+      const toFront = {
+        ...user,
+        password: undefined,
+        hash: undefined,
+        hashedRt: undefined,
+      };
+      console.log(`user: ${user}`);
+      return { ...tokens, role: user.role, user: toFront };
     }
   }
 
-  async logoutUser(dto: loginDto) {
-    const query = { email: dto.email };
-    const user = await this.usersService.findByemail(query);
+  async logoutUser(email: { email: string }) {
+    const user = await this.usersService.findByemail(email);
     await this.updateRtHash(user.id, null);
   }
-  async getTokens(
-    email: string,
-    role: string,
-  ): Promise<tokens> {
+  async getTokens(email: string, role: string): Promise<tokens> {
     const [at, rt] = await Promise.all([
       this.jwtService.signAsync(
         {
@@ -123,7 +131,6 @@ export class AuthService {
     }
   }
 
-  
   // async validateUser(info: { username: string; pass: string }): Promise<any> {
   //   const user = await this.usersService.findUser(info);
   //   // check if you are comparing hash
@@ -133,11 +140,11 @@ export class AuthService {
   //   }
   //   return null;
   // }
-  
+
   hashData(data: string) {
     return bcrypt.hash(data, 10);
   }
-  
+
   // async login(user: any) {
   //   const payload = { username: user.username, sub: user.userId };
   //   return {

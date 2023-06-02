@@ -14,7 +14,7 @@ export class AuthController {
   //   return this.authService.validateUser(info);
   // }
 
-  @Public() 
+  @Public()
   @Post('signup/user')
   async signupUser(@Body() dto: userDto) {
     return this.authService.signupUser(dto);
@@ -27,12 +27,12 @@ export class AuthController {
   }
 
   @Post('logout')
-  async logout(@Body() dto: loginDto) {
-    return this.authService.logoutUser(dto);
+  async logout(@Body() email: {email : string}) {
+    return this.authService.logoutUser(email);
   }
 
   @Post('refresh')
-  async refreshTokens(@Body() ref: {email: string, rt: string}) {
+  async refreshTokens(@Body() ref: { email: string; rt: string }) {
     console.log(ref, 'fd');
     return this.authService.refreshTokens(ref);
   }

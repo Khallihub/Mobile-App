@@ -7,9 +7,7 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel('user') private user: Model<USER>,
-  ) {}
+  constructor(@InjectModel('user') private user: Model<USER>) {}
 
   async addUser(dto: userDto) {
     const user = new this.user({
@@ -98,13 +96,13 @@ export class UsersService {
     const user = await this.findByUsername({ userName: data.userName });
     const hash = this.hashData(data.password);
     if (hash === user.hash) {
-      this.user.deleteOne({userName: data.userName})
-      return "successful"
-    }else {
-      return "incorrect password"
+      this.user.deleteOne({ userName: data.userName });
+      return 'successful';
+    } else {
+      return 'incorrect password';
     }
   }
-  
+
   hashData(data: string) {
     return bcrypt.hash(data, 10);
   }
