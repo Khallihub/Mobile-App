@@ -34,13 +34,34 @@ export class UsersService {
     return await this.user.findOne({ email: info.email.toLowerCase() });
   }
 
-  async updateProfile(dto: userDto) {
+  async updateProfile(data: {
+    email: string;
+    userName: string;
+    bio: string;
+    password: string;
+  }) {
+    if ((data.password = '')) {
+      const updatedProfile = await this.user.findOneAndUpdate(
+        { email: data.email },
+        {
+          userName: data.userName,
+          //avatar: dto.avatar,
+          bio: data.bio,
+        },
+        { new: true },
+      );
+      return updatedProfile;
+    }
+    const hashed = await this.hashData(data.password);
+    data.password = hashed;
+
     const updatedProfile = await this.user.findOneAndUpdate(
-      { email: dto.email },
+      { email: data.email },
       {
-        Name: dto.Name,
-        avatar: dto.avatar,
-        bio: dto.bio,
+        userName: data.userName,
+        //avatar: dto.avatar,
+        bio: data.bio,
+        hash: data.password,
       },
       { new: true },
     );

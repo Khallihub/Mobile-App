@@ -17,8 +17,8 @@ export class UsersController {
   }
 
   @Post('updateProfile')
-  async updateProfile(@Body() dto: userDto){
-    return this.usersService.updateProfile(dto)
+  async updateProfile(@Body() data: {email: string, userName: string,bio: string, password: string }){
+    return this.usersService.updateProfile(data)
   }
 
   @Post('updateFollowers')
