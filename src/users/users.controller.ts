@@ -10,10 +10,20 @@ export class UsersController {
   async getUser(@Body() email: {email: string}){
     return this.usersService.findByemail(email)
   }
+  
+  @Post('getUsers')
+  async getUsers(@Body() usersNames: {users: string[]}){
+    const users = usersNames["users"]
+    return this.usersService.findByUsernames(users)
+  }
 
   @Post('search')
   async search(@Body() userName: {userName: string}){
     return this.usersService.findByUsername(userName)
+  }
+  @Post('searchUsers')
+  async finadByName(@Body() query: {text: string}){
+    return this.usersService.findByName(query)
   }
 
   @Post('updateProfile')

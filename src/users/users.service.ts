@@ -7,10 +7,16 @@ import * as bcrypt from 'bcrypt';
 
 @Injectable()
 export class UsersService {
-  constructor(
-    @InjectModel('user') private user: Model<USER>,
-  ) {}
-
+  constructor(@InjectModel('user') private user: Model<USER>) {}
+  
+  async findByName(query: { text: string; }) {
+    if (query.text.trim() === '') {
+      return [];
+    }
+    const regex = new RegExp(query.text, 'i'); // Create a case-insensitive regex pattern
+    const users = await this.user.find({ Name: { $regex: regex } });
+    return users
+  }
   async addUser(dto: userDto) {
     const user = new this.user({
       Name: dto.Name,
@@ -28,8 +34,21 @@ export class UsersService {
     return result;
   }
 
+  
+
   async findByUsername(info: { userName: string }): Promise<USER | undefined> {
     return await this.user.findOne({ userName: info.userName.toLowerCase() });
+  }
+  async findByUsernames(userNames: string[]) {
+    let users = [];
+    for (const userName of userNames) {
+      let temp = await this.user.findOne({ userName: userName });
+      if (temp) {
+        users.push(temp);
+      }
+    }
+    console.log(users);
+    return users;
   }
 
   async findByemail(info: { email: string }): Promise<USER | undefined> {
@@ -98,13 +117,13 @@ export class UsersService {
     const user = await this.findByUsername({ userName: data.userName });
     const hash = this.hashData(data.password);
     if (hash === user.hash) {
-      this.user.deleteOne({userName: data.userName})
-      return "successful"
-    }else {
-      return "incorrect password"
+      this.user.deleteOne({ userName: data.userName });
+      return 'successful';
+    } else {
+      return 'incorrect password';
     }
   }
-  
+
   hashData(data: string) {
     return bcrypt.hash(data, 10);
   }
