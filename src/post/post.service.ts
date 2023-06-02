@@ -3,23 +3,28 @@ import { postDto } from './postDto/post.dto';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { POST } from './post.model';
+import { USER } from 'src/users/users.model';
 
 @Injectable()
 export class PostService {
-  constructor(@InjectModel('post') private post: Model<POST>) {}
-  
+  constructor(
+    @InjectModel('post') private post: Model<POST>,
+    @InjectModel('user') private user: Model<USER>,
+  ) {}
+
   rate() {
     throw new Error('Method not implemented.');
   }
-  
-  async getSinglePost(data: { id: string; }) {
-    const post = await this.post.findById(data.id)
-    return post
+
+  async getSinglePost(data: { id: string }) {
+    const post = await this.post.findById(data.id);
+    return post;
   }
   async comment(data: { id: string; userName: string; comment: string }) {
     const post = await this.post.findById(data.id);
+    let user_data = await this.user.find({ userName: data.userName });
     let temp = post.comments;
-    temp.push([data.userName, data.comment]);
+    temp.push([user_data, data.comment]);
     const updatePost = await this.post.findByIdAndUpdate(
       { _id: data.id },
       { comments: temp },
@@ -34,17 +39,19 @@ export class PostService {
   async getComments(data: { id: string }) {
     const feed = await this.post.findById(data.id);
     const comments = feed.comments;
+    console.log('comments: ');
+    console.log(comments);
     return comments;
   }
-  async getLikes(data: { id: string; }) {
+  async getLikes(data: { id: string }) {
     const feed = await this.post.findById(data.id);
-    const likes = feed.likes
-    return likes
+    const likes = feed.likes;
+    return likes;
   }
-  async getDislikes(data: { id: string; }) {
+  async getDislikes(data: { id: string }) {
     const feed = await this.post.findById(data.id);
-    const dislikes = feed.dislikes
-    return dislikes
+    const dislikes = feed.dislikes;
+    return dislikes;
   }
   async like_Unlike(data: { id: string; userName: string }) {
     const post = await this.post.findById(data.id);

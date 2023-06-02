@@ -13,9 +13,7 @@ import { ChatModule } from './chat/chat.module';
   imports: [
     AuthModule,
     UsersModule,
-    MongooseModule.forRoot(
-      'mongodb://127.0.0.1:27017/project',
-    ),
+    MongooseModule.forRoot('mongodb://127.0.0.1:27017/picstash'),
     PostModule,
     ChatModule,
   ],
