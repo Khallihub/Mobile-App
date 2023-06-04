@@ -19,6 +19,7 @@ export class ChatService {
       { messages: unchangedMessages },
       { new: true },
     );
+    return updatedChat
   }
 
   async renameChat(data: {
@@ -85,7 +86,6 @@ export class ChatService {
       { $push: { messages: message }, lastMessage: message },
       { new: true },
     );
-    console.log(chat)
     return chat;
   }
 
